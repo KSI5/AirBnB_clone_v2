@@ -1,30 +1,32 @@
-#!/usr/bin/env python3
-from fabric.api import env, put, run, local
-from os.path import exists
+#!/usr/bin/python3
+""" a module to push a package to servers and deploy """
+import os
+from fabric.api import put, env, run
 
-env.hosts = ['<IP web-01>', '<IP web-02>']
+
+env.hosts = ["52.3.246.137", "3.84.222.135"]
+
+env.user = "ubuntu"
+
 
 def do_deploy(archive_path):
-    if not exists(archive_path):
+    """ deploy package """
+    if archive_path is None or not os.path.isfile(archive_path):
+        print("NOT PATH")
         return False
 
-    try:
-        # Upload archive to /tmp/ directory of the web server
-        put(archive_path, "/tmp/")
+    aname = os.path.basename(archive_path)
+    rname = aname.split(".")[0]
 
-        # Extract archive to /data/web_static/releases/
-        archive_filename = archive_path.split("/")[-1]
-        archive_no_extension = archive_filename.split(".")[0]
-        remote_path = "/data/web_static/releases/"
+    put(local_path=archive_path, remote_path="/tmp/")
+    run("mkdir -p /data/web_static/releases/{}".format(rname))
+    run("tar -xzf /tmp/{} \
+        -C /data/web_static/releases/{}".format(aname, rname))
+    run("rm /tmp/{}".format(aname))
+    run("rm -rf /data/web_static/current")
+    run("ln -fs /data/web_static/releases/{}/ \
+        /data/web_static/current".format(rname))
+    run("mv /data/web_static/current/web_static/* /data/web_static/current/")
+    run("rm -rf /data/web_static/curren/web_static")
 
-        run("mkdir -p {}{}".format(remote_path, archive_no_extension))
-        run("tar -xzf /tmp/{} -C {}{}/".format(archive_filename, remote_path, archive_no_extension))
-        run("rm /tmp/{}".format(archive_filename))
-
-        # Delete and recreate symbolic link
-        run("rm -rf /data/web_static/current")
-        run("ln -s {}{}/ /data/web_static/current".format(remote_path, archive_no_extension))
-
-        return True
-    except Exception:
-        return False
+    return True
