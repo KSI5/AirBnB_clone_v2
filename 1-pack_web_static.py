@@ -1,14 +1,15 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
+""" a module to package web_static files """
+import datetime
+import os
 from fabric.api import local
-from datetime import datetime
+
 
 def do_pack():
-    """Generates a .tgz archive from the web_static folder."""
-    try:
-        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        archive_name = "web_static_{}.tgz".format(timestamp)
-        local("mkdir -p versions")
-        local("tar -cvzf versions/{} web_static".format(archive_name))
-        return "versions/{}".format(archive_name)
-    except Exception:
-        return None
+    """ package function """
+    if not os.path.isdir("./versions"):
+        os.makedirs("./versions")
+    ntime = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    local("tar -czzf versions/web_static_{}.tgz web_static/*".format(ntime))
+    return ("{}/versions/web_static_{}.tgz".format(os.path.dirname(
+        os.path.abspath(__file__)), ntime))
