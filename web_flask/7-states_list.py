@@ -1,14 +1,16 @@
 #!/usr/bin/python3
-'''
-This is a simple Flask web application.
+'''This is a simple Flask web application.
 '''
 from flask import Flask, render_template
+
 from models import storage
 from models.state import State
+
 
 app = Flask(__name__)
 '''The Flask application instance.'''
 app.url_map.strict_slashes = False
+
 
 @app.route('/states_list')
 def states_list():
@@ -20,10 +22,12 @@ def states_list():
     }
     return render_template('7-states_list.html', **ctxt)
 
+
 @app.teardown_appcontext
 def flask_teardown(exc):
     '''The Flask app/request context end event listener.'''
     storage.close()
 
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port='5000')
