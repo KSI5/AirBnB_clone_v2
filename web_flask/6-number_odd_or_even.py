@@ -1,4 +1,5 @@
-imple Flask web application.
+#!/usr/bin/python3
+'''A simple Flask web application.
 '''
 from flask import Flask, render_template
 
