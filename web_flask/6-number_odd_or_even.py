@@ -1,66 +1,61 @@
-#!/usr/bin/python3
-'''
-A simple Flask web application.
+imple Flask web application.
 '''
 from flask import Flask, render_template
 
+
 app = Flask(__name__)
+'''The Flask application instance.'''
 app.url_map.strict_slashes = False
 
+
 @app.route('/')
-def hello_hbnb():
-    '''
-    The home page.
-    '''
+def index():
+    '''The home page.'''
     return 'Hello HBNB!'
+
 
 @app.route('/hbnb')
 def hbnb():
-    '''
-    The hbnb page.
-    '''
+    '''The hbnb page.'''
     return 'HBNB'
+
 
 @app.route('/c/<text>')
 def c_page(text):
-    '''
-    The c page.
-    '''
-    text = text.replace('_', ' ')
-    return 'C {}'.format(text)
+    '''The c page.'''
+    return 'C {}'.format(text.replace('_', ' '))
 
-@app.route('/python/')
+
 @app.route('/python/<text>')
-def python_page(text='is_cool'):
-    '''
-    The python page.
-    '''
-    text = text.replace('_', ' ')
-    return 'Python {}'.format(text)
+@app.route('/python')
+def python_page(text='is cool'):
+    '''The python page.'''
+    return 'Python {}'.format(text.replace('_', ' '))
+
 
 @app.route('/number/<int:n>')
-def is_number(n):
-    '''
-    Display "n is a number" only if n is an integer.
-    '''
+def number_page(n):
+    '''The number page.'''
     return '{} is a number'.format(n)
+
 
 @app.route('/number_template/<int:n>')
 def number_template(n):
-    '''
-    Display an HTML page with "Number: n" inside an H1 tag in the BODY, if n is an integer.
-    '''
-    return render_template('number_template.html', n=n)
+    '''The number_template page.'''
+    ctxt = {
+        'n': n
+    }
+    return render_template('5-number.html', **ctxt)
+
 
 @app.route('/number_odd_or_even/<int:n>')
 def number_odd_or_even(n):
-    '''
-    Display an HTML page with "Number: n is even|odd" inside an H1 tag in the BODY, if n is an integer.
-    '''
-    if n % 2 == 0:
-        return render_template('number_odd_or_even.html', n=n, result="even")
-    else:
-        return render_template('number_odd_or_even.html', n=n, result="odd")
+    '''The number_odd_or_even page.'''
+    ctxt = {
+        'n': n
+    }
+    return render_template('6-number_odd_or_even.html', **ctxt)
+
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port='5000')
