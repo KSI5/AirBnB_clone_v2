@@ -1,34 +1,43 @@
 #!/usr/bin/python3
-"""
-This script starts a Flask web application.
-"""
-
+'''
+A simple Flask web application.
+'''
 from flask import Flask
+from markupsafe import escape
 
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 
-@app.route('/', strict_slashes=False)
+@app.route('/')
 def hello_hbnb():
-    """
-    Define a route that displays "Hello HBNB!"
-    """
-    return "Hello HBNB!"
+    '''
+    The home page.
+    '''
+    return 'Hello HBNB!'
 
-@app.route('/hbnb', strict_slashes=False)
+@app.route('/hbnb')
 def hbnb():
-    """
-    Define a route that displays "HBNB"
-    """
-    return "HBNB"
+    '''
+    The hbnb page.
+    '''
+    return 'HBNB'
 
-@app.route('/c/<text>', strict_slashes=False)
-def c_with_text(text):
-    """
-    Define a route that displays "C " followed by the value of the text variable.
-    Replace underscores (_) with spaces.
-    """
+@app.route('/c/<text>')
+def c_page(text):
+    '''
+    The c page.
+    '''
     text = text.replace('_', ' ')
-    return "C " + text
+    return 'C {}'.format(escape(text))
 
-if __name__ == "__main__":
+@app.route('/python/')
+@app.route('/python/<text>')
+def python_page(text='is_cool'):
+    '''
+    The python page.
+    '''
+    text = text.replace('_', ' ')
+    return 'Python {}'.format(escape(text))
+
+if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
